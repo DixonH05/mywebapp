@@ -1,0 +1,9 @@
+<!doctype html><meta charset="utf-8"><title>new test</title>
+<h1>我在 new.html</h1>
+<form method="post" action="{{ url_for('create_post') }}">
+  <p><input name="title" placeholder="標題" required></p>
+  <p><input name="author" placeholder="作者" required></p>
+  <p><textarea name="content" rows="5" placeholder="內容" required></textarea></p>
+  <button type="submit">儲存</button>
+</form>
+<p><a href="{{ url_for('index') }}">回列表</a></p>
