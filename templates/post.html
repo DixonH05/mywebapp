@@ -1,50 +1,31 @@
 <!doctype html>
-<html>
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>{{ post.title if post else "文章" }}</title>
-    <style>
-      body{font-family:system-ui,-apple-system,"Segoe UI",Roboto,"Noto Sans","Helvetica Neue",Arial,sans-serif;margin:0;padding:0;line-height:1.6;}
-      header,footer{background:#f5f5f5;padding:12px 20px;}
-      main{max-width:880px;margin:20px auto;padding:0 16px;}
-      a,button{cursor:pointer;}
-      .meta{color:#666;font-size:14px;margin:6px 0 14px;}
-      .content{white-space:pre-wrap;}
-      .actions{display:flex;gap:10px;align-items:center;margin-top:16px;}
-      .actions form{display:inline;}
-      button{padding:8px 14px;border:1px solid #ddd;border-radius:6px;background:#fff;}
-      a.btn{padding:8px 14px;border:1px solid #ddd;border-radius:6px;text-decoration:none;color:inherit;}
-    </style>
-  </head>
-  <body>
-    <header>
-      <h1><a href="{{ url_for('index') }}" style="text-decoration:none;color:inherit;">Mini Blog</a></h1>
-    </header>
+<meta charset="utf-8">
+<title>任務詳情</title>
+<style>
+  body{font-family:system-ui,Segoe UI,Roboto,Arial,sans-serif;max-width:720px;margin:24px auto;padding:0 16px;}
+  .meta{color:#555}
+  a.btn, button{padding:6px 10px;border:1px solid #ddd;border-radius:8px;background:#fff;text-decoration:none;color:#222;cursor:pointer;}
+  .btns{display:flex;gap:8px;margin-top:12px}
+  .done{opacity:.55;text-decoration:line-through}
+  pre{white-space:pre-wrap}
+</style>
 
-    <main>
-      {% if not post %}
-        <p>找不到這篇文章。</p>
-      {% else %}
-        <article>
-          <h2>{{ post.title }}</h2>
-          <div class="meta">
-            作者：{{ post.author }}
-            {% if post.created_at %}　時間：{{ post.created_at.strftime("%Y-%m-%d %H:%M") }}{% endif %}
-          </div>
-          <div class="content">{{ post.content | safe }}</div>
-        </article>
+<h1 class="{{ 'done' if task.done else '' }}">{{ task.title }}</h1>
+<p class="meta">
+  建立時間：{{ task.created_at.strftime('%Y-%m-%d %H:%M') }}
+  {% if task.due_date %}｜到期：{{ task.due_date }}{% endif %}
+  ｜狀態：{{ '已完成' if task.done else '未完成' }}
+</p>
 
-        <div class="actions">
-          <a class="btn" href="{{ url_for('index') }}">回列表</a>
-          <a class="btn" href="{{ url_for('edit_post', post_id=post.id) }}">編輯</a>
-          <form method="post" action="{{ url_for('delete_post', post_id=post.id) }}" onsubmit="return confirm('確定刪除？');">
-            <button type="submit">刪除</button>
-          </form>
-        </div>
-      {% endif %}
-    </main>
+{% if task.notes %}
+<h3>備註</h3>
+<pre>{{ task.notes }}</pre>
+{% endif %}
 
-    <footer>Powered by Flask + SQLAlchemy</footer>
-  </body>
-</html>
+<div class="btns">
+  <a class="btn" href="{{ url_for('index') }}">回列表</a>
+  <a class="btn" href="{{ url_for('edit_task', task_id=task.id) }}">編輯</a>
+  <form method="post" action="{{ url_for('delete_task', task_id=task.id) }}" onsubmit="return confirm('確定刪除？')">
+    <button type="submit">刪除</button>
+  </form>
+</div>

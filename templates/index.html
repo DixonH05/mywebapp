@@ -1,46 +1,37 @@
 <!doctype html>
-<html>
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>文章列表</title>
-    <style>
-      body{font-family:system-ui,-apple-system,"Segoe UI",Roboto,"Noto Sans","Helvetica Neue",Arial,sans-serif;margin:0;padding:0;line-height:1.6;}
-      header,footer{background:#f5f5f5;padding:12px 20px;}
-      main{max-width:880px;margin:20px auto;padding:0 16px;}
-      a.btn,button{padding:8px 14px;border:1px solid #ddd;border-radius:6px;text-decoration:none;color:inherit;background:#fff;display:inline-block;}
-      ul.list{list-style:none;padding:0;margin:12px 0 0;}
-      ul.list li{padding:10px 0;border-bottom:1px solid #eee;}
-      .meta{color:#666;font-size:14px;margin-top:4px;}
-      .actions{margin-top:8px;}
-    </style>
-  </head>
-  <body>
-    <header>
-      <h1>Mini Blog</h1>
-      <div class="actions">
-        <a class="btn" href="{{ url_for('new_post') }}">＋ 新增文章</a>
-      </div>
-    </header>
+<meta charset="utf-8">
+<title>待辦清單</title>
+<style>
+  body{font-family:system-ui,Segoe UI,Roboto,Arial,sans-serif;max-width:860px;margin:24px auto;padding:0 16px;}
+  header{display:flex;justify-content:space-between;align-items:center;}
+  a.btn, button{padding:6px 10px;border:1px solid #ddd;border-radius:8px;background:#fff;text-decoration:none;color:#222;cursor:pointer;}
+  ul{list-style:none;padding:0}
+  li{display:flex;justify-content:space-between;align-items:center;border:1px solid #eee;border-radius:10px;padding:10px 12px;margin:8px 0}
+  .done{opacity:.55;text-decoration:line-through}
+  .duedate{font-size:12px;color:#666}
+</style>
 
-    <main>
-      <h2>文章列表</h2>
-      {% if not posts %}
-        <p>目前沒有文章，點右上「新增文章」開始吧！</p>
-      {% else %}
-        <ul class="list">
-          {% for p in posts %}
-            <li>
-              <a href="{{ url_for('show_post', post_id=p.id) }}"><strong>{{ p.title }}</strong></a>
-              <div class="meta">
-                作者：{{ p.author }}{% if p.created_at %}　時間：{{ p.created_at.strftime("%Y-%m-%d %H:%M") }}{% endif %}
-              </div>
-            </li>
-          {% endfor %}
-        </ul>
-      {% endif %}
-    </main>
+<header>
+  <h1>✅ 待辦清單</h1>
+  <a class="btn" href="{{ url_for('new_task') }}">＋ 新增任務</a>
+</header>
 
-    <footer>Powered by Flask + SQLAlchemy</footer>
-  </body>
-</html>
+{% if tasks %}
+<ul>
+  {% for t in tasks %}
+  <li>
+    <div>
+      <a href="{{ url_for('show_task', task_id=t.id) }}" class="{{ 'done' if t.done else '' }}">
+        {{ t.title }}
+      </a>
+      {% if t.due_date %}<div class="duedate">到期：{{ t.due_date }}</div>{% endif %}
+    </div>
+    <form method="post" action="{{ url_for('delete_task', task_id=t.id) }}" onsubmit="return confirm('確定刪除？')">
+      <button type="submit">刪除</button>
+    </form>
+  </li>
+  {% endfor %}
+</ul>
+{% else %}
+<p>目前沒有任務，先<a href="{{ url_for('new_task') }}">新增一個</a>吧！</p>
+{% endif %}
